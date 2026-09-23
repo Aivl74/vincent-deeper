@@ -196,20 +196,20 @@ footer {
     </div>
 
     <div class="videos">
-      <a class="video" href="https://youtu.be/x77FIeWc2X0?is=x_BszYtx69tzDwTl" target="_blank" rel="noopener">
-        <img src="https://img.youtube.com/vi/x77FIeWc2X0/hqdefault.jpg" alt="Vidéo mix 1">
+      <a class="video" data-youtube-id="x77FIeWc2X0" href="https://youtu.be/x77FIeWc2X0?is=x_BszYtx69tzDwTl" target="_blank" rel="noopener">
+        <img src="https://img.youtube.com/vi/x77FIeWc2X0/hqdefault.jpg" alt="Live set YouTube de Vincent Deeper">
         <span class="play">▶</span>
         <div class="vcopy">
-          <strong>Vidéo Mix 1</strong>
+          <strong class="youtube-title">Voir la vidéo sur YouTube</strong>
           <span>YouTube</span>
         </div>
       </a>
 
-      <a class="video" href="https://youtu.be/jksrAdIrO5Y?is=U_uLsLCnpJ8a1L_6" target="_blank" rel="noopener">
-        <img src="https://img.youtube.com/vi/jksrAdIrO5Y/hqdefault.jpg" alt="Vidéo mix 2">
+      <a class="video" data-youtube-id="jksrAdIrO5Y" href="https://youtu.be/jksrAdIrO5Y?is=U_uLsLCnpJ8a1L_6" target="_blank" rel="noopener">
+        <img src="https://img.youtube.com/vi/jksrAdIrO5Y/hqdefault.jpg" alt="Live set YouTube de Vincent Deeper">
         <span class="play">▶</span>
         <div class="vcopy">
-          <strong>Vidéo Mix 2</strong>
+          <strong class="youtube-title">Voir la vidéo sur YouTube</strong>
           <span>YouTube</span>
         </div>
       </a>
@@ -218,5 +218,38 @@ footer {
 
   <footer>© 2026 Vincent Deeper · Independent website</footer>
 </main>
+
+<script>
+(() => {
+  const cards = document.querySelectorAll('.video[data-youtube-id]');
+
+  cards.forEach(async (card) => {
+    const videoId = card.dataset.youtubeId;
+    const titleEl = card.querySelector('.youtube-title');
+    const imageEl = card.querySelector('img');
+
+    if (!videoId || !titleEl) return;
+
+    const videoUrl = 'https://www.youtube.com/watch?v=' + encodeURIComponent(videoId);
+    const oEmbedUrl = 'https://www.youtube.com/oembed?url=' +
+      encodeURIComponent(videoUrl) + '&format=json';
+
+    try {
+      const response = await fetch(oEmbedUrl, { mode: 'cors' });
+      if (!response.ok) throw new Error('YouTube oEmbed: ' + response.status);
+
+      const data = await response.json();
+      if (!data || !data.title) throw new Error('Titre YouTube absent');
+
+      titleEl.textContent = data.title;
+      card.setAttribute('aria-label', data.title + ' — YouTube');
+      card.setAttribute('title', data.title);
+      if (imageEl) imageEl.alt = data.title;
+    } catch (error) {
+      console.warn('Impossible de charger le titre YouTube pour ' + videoId, error);
+    }
+  });
+})();
+</script>
 </body>
 </html>
