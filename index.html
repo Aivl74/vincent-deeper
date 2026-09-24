@@ -107,6 +107,24 @@ h2 { margin:0; font-size:21px; letter-spacing:-.02em; }
 .title { font-size:15px; font-weight:800; line-height:1.25; }
 .meta { margin-top:5px; color:var(--muted); font-size:12px; }
 .arrow { font-size:24px; color:#ddd; margin-left:auto; }
+.photo-grid {
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:8px;
+}
+.photo-tile {
+  overflow:hidden;
+  border-radius:14px;
+  aspect-ratio:3 / 4;
+  background:#151517;
+  border:1px solid rgba(255,255,255,.06);
+}
+.photo-tile img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
 .videos {
   display:grid; grid-template-columns:1fr 1fr; gap:10px;
 }
@@ -171,6 +189,7 @@ footer {
 
   <div class="nav">
     <a href="#music">Music</a>
+    <a href="#photos">Photos</a>
     <a href="#live">Live Set</a>
   </div>
 
@@ -189,6 +208,25 @@ footer {
       </div>
       <span class="arrow">›</span>
     </a>
+  </section>
+
+  <section id="photos">
+    <div class="head">
+      <h2>Photos</h2>
+      <span class="small">On the decks</span>
+    </div>
+
+    <div class="photo-grid">
+      <div class="photo-tile">
+        <img src="assets/photos/photo-1.jpg" alt="Vincent Deeper DJ set" loading="lazy">
+      </div>
+      <div class="photo-tile">
+        <img src="assets/photos/photo-2.jpg" alt="Vincent Deeper DJ set in club" loading="lazy">
+      </div>
+      <div class="photo-tile">
+        <img src="assets/photos/photo-3.jpg" alt="Vincent Deeper behind the decks" loading="lazy">
+      </div>
+    </div>
   </section>
 
   <section id="live">
