@@ -182,11 +182,28 @@ body.lightbox-open {
   overflow:hidden;
 }
 .videos {
-  display:grid; grid-template-columns:1fr 1fr; gap:10px;
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  padding-bottom:2px;
+}
+.videos::-webkit-scrollbar {
+  display:none;
 }
 .video {
-  position:relative; min-height:195px; overflow:hidden;
-  border-radius:17px; text-decoration:none; color:#fff;
+  position:relative;
+  flex:0 0 calc(50% - 5px);
+  min-height:195px;
+  overflow:hidden;
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+  border-radius:17px;
+  text-decoration:none;
+  color:#fff;
   border:1px solid rgba(255,255,255,.07);
   background:#111;
 }
@@ -213,9 +230,11 @@ footer {
   margin-top:34px; border-top:1px solid var(--line); padding-top:20px;
   text-align:center; color:#76767c; font-size:11px;
 }
-@media(max-width:390px) {
-  .videos { grid-template-columns:1fr; }
-  .video { min-height:210px; }
+@media(max-width:600px) {
+  .video {
+    flex:0 0 88%;
+    min-height:210px;
+  }
 }
 </style>
 </head>
