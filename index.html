@@ -236,6 +236,17 @@ footer {
     min-height:210px;
   }
 }
+.sell-intro { color:var(--muted); font-size:13px; line-height:1.6; margin:0 0 13px; }
+.sell-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:12px 0; }
+.sell-item { display:block; min-width:0; color:inherit; text-decoration:none; border:1px solid var(--line); background:var(--card); border-radius:16px; overflow:hidden; }
+.sell-item img { display:block; width:100%; aspect-ratio:1; object-fit:cover; background:#151517; }
+.sell-item-content { padding:11px; }
+.sell-item-title { font-weight:750; font-size:13px; line-height:1.35; margin-bottom:7px; overflow-wrap:anywhere; }
+.sell-item-meta { color:var(--muted); font-size:11px; line-height:1.5; }
+.sell-item-price { color:var(--orange); font-size:14px; font-weight:800; margin-top:8px; }
+.sell-link { display:block; margin-top:12px; text-align:center; color:#fff; text-decoration:none; font-size:12px; font-weight:800; letter-spacing:.06em; padding:14px; border:1px solid rgba(255,255,255,.2); border-radius:13px; background:#252529; }
+.sell-status { color:var(--muted); font-size:12px; margin-top:10px; }
+@media(min-width:601px) { .sell-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
 </style>
 </head>
 <body>
@@ -264,6 +275,7 @@ footer {
 
   <div class="nav">
     <a href="#music">Music</a>
+    <a href="#sell">Sell Music</a>
     <a href="#photos">Photos</a>
     <a href="#live">Live Set</a>
   </div>
@@ -283,6 +295,17 @@ footer {
       </div>
       <span class="arrow">›</span>
     </a>
+  </section>
+
+  <section id="sell">
+    <div class="head">
+      <h2>Sell Music</h2>
+      <span class="small">Vinyl for sale</span>
+    </div>
+    <p class="sell-intro">Dig through my records for sale. Browse the selection here and complete your purchase securely on Discogs.</p>
+    <div class="sell-grid" id="sell-grid" aria-live="polite"></div>
+    <p class="sell-status" id="sell-status">Discover my current vinyl listings on Discogs.</p>
+    <a class="sell-link" href="https://www.discogs.com/seller/Vincent_Deeper/profile" target="_blank" rel="noopener noreferrer">SHOP ALL RECORDS ON DISCOGS ↗</a>
   </section>
 
   <section id="photos">
@@ -393,6 +416,54 @@ footer {
   });
 })();
 
+</script>
+<script>
+(() => {
+  const grid = document.getElementById('sell-grid');
+  const status = document.getElementById('sell-status');
+  if (!grid || !status) return;
+  const api = 'https://api.discogs.com/users/Vincent_Deeper/inventory?status=for%20sale&sort=listed&sort_order=desc&per_page=12&page=1';
+  fetch(api, { headers: { Accept: 'application/vnd.discogs.v2.discogs+json' } })
+    .then(response => { if (!response.ok) throw new Error('Discogs API ' + response.status); return response.json(); })
+    .then(data => {
+      const listings = Array.isArray(data.listings) ? data.listings.filter(item => item.status === 'For Sale') : [];
+      if (!listings.length) { status.textContent = 'Browse the current selection on Discogs.'; return; }
+      listings.forEach(item => {
+        const release = item.release || {};
+        const card = document.createElement('a');
+        card.className = 'sell-item';
+        card.href = item.uri && /^https:\/\/www\.discogs\.com\//.test(item.uri)
+          ? item.uri : 'https://www.discogs.com/sell/item/' + encodeURIComponent(item.id);
+        card.target = '_blank';
+        card.rel = 'noopener noreferrer';
+        const img = document.createElement('img');
+        const imgUrl = release.thumbnail || '';
+        if (/^https:\/\//.test(imgUrl)) { img.src = imgUrl; img.alt = release.description || 'Vinyl record'; img.loading = 'lazy'; }
+        const body = document.createElement('div');
+        body.className = 'sell-item-content';
+        const title = document.createElement('div');
+        title.className = 'sell-item-title';
+        title.textContent = release.description || 'Vinyl record';
+        const details = document.createElement('div');
+        details.className = 'sell-item-meta';
+        details.textContent = [item.condition, item.sleeve_condition].filter(Boolean).join(' · ');
+        const price = document.createElement('div');
+        price.className = 'sell-item-price';
+        const value = item.price && Number(item.price.value);
+        price.textContent = Number.isFinite(value) && item.price.currency
+          ? new Intl.NumberFormat('fr-FR',{style:'currency',currency:item.price.currency}).format(value)
+          : 'View price on Discogs';
+        if (img.src) card.appendChild(img);
+        body.append(title,details,price);
+        card.appendChild(body);
+        grid.appendChild(card);
+      });
+      status.textContent = 'Latest listings · Availability and final price confirmed on Discogs.';
+    })
+    .catch(() => {
+      status.textContent = 'View the latest available records directly in my Discogs shop.';
+    });
+})();
 </script>
 </body>
 </html>
