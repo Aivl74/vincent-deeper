@@ -237,16 +237,16 @@ footer {
   }
 }
 .sell-intro { color:var(--muted); font-size:13px; line-height:1.6; margin:0 0 13px; }
-.sell-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:12px 0; }
-.sell-item { display:block; min-width:0; color:inherit; text-decoration:none; border:1px solid var(--line); background:var(--card); border-radius:16px; overflow:hidden; }
+.sell-grid { display:flex; gap:9px; overflow-x:auto; scroll-snap-type:x proximity; padding:3px 0 9px; margin:9px 0; scrollbar-width:thin; }
+.sell-item { display:block; flex:0 0 112px; min-width:0; color:inherit; text-decoration:none; border:1px solid var(--line); background:var(--card); border-radius:11px; overflow:hidden; scroll-snap-align:start; }
 .sell-item img { display:block; width:100%; aspect-ratio:1; object-fit:cover; background:#151517; }
-.sell-item-content { padding:11px; }
-.sell-item-title { font-weight:750; font-size:13px; line-height:1.35; margin-bottom:7px; overflow-wrap:anywhere; }
-.sell-item-meta { color:var(--muted); font-size:11px; line-height:1.5; }
-.sell-item-price { color:var(--orange); font-size:14px; font-weight:800; margin-top:8px; }
+.sell-item-content { padding:7px; }
+.sell-item-title { font-weight:700; font-size:10px; line-height:1.3; margin-bottom:3px; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.sell-item-meta { display:none; }
+.sell-item-price { color:var(--orange); font-size:11px; font-weight:750; margin-top:3px; }
 .sell-link { display:block; margin-top:12px; text-align:center; color:#fff; text-decoration:none; font-size:12px; font-weight:800; letter-spacing:.06em; padding:14px; border:1px solid rgba(255,255,255,.2); border-radius:13px; background:#252529; }
 .sell-status { color:var(--muted); font-size:12px; margin-top:10px; }
-@media(min-width:601px) { .sell-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media(min-width:601px) { .sell-item { flex-basis:126px; } }
 </style>
 </head>
 <body>
@@ -302,7 +302,7 @@ footer {
       <h2>Sell Music</h2>
       <span class="small">Vinyl for sale</span>
     </div>
-    <p class="sell-intro">Dig through my records for sale. Browse the selection here and complete your purchase securely on Discogs.</p>
+    <p class="sell-intro">A few records from my Discogs collection. Scroll to explore.</p>
     <div class="sell-grid" id="sell-grid" aria-live="polite"></div>
     <p class="sell-status" id="sell-status">Discover my current vinyl listings on Discogs.</p>
     <a class="sell-link" href="https://www.discogs.com/seller/Vincent_Deeper/profile" target="_blank" rel="noopener noreferrer">SHOP ALL RECORDS ON DISCOGS ↗</a>
@@ -458,7 +458,7 @@ footer {
         card.appendChild(body);
         grid.appendChild(card);
       });
-      status.textContent = 'Latest listings · Availability and final price confirmed on Discogs.';
+      status.textContent = 'Latest listings · Swipe to explore · Buy on Discogs.';
     })
     .catch(() => {
       status.textContent = 'View the latest available records directly in my Discogs shop.';
